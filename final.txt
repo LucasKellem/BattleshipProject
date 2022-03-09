@@ -1,0 +1,48 @@
+TITLE:
+Lucas Kellem
+CSCI 261 Section F
+Professor Gillette
+						     Battleship
+PROBLEM DESCRIPTION:
+	My program is my take of the commercial game “Battleship” in which the user/s get a title screen, start the game by pressing the play button or go to the highscore screen by pressing the highscore button, both players enter their names (with valid characters), then take turns to sink all of the randomly generated ships of the other player. Player input is given by clicking on valid locations on the grid (non-valid inputs are caught and or the user is notified to pick a new location depending on the context) and then pressing the fire button. Once a player has won, a game over screen displays, and the winner is notified if they have a new highscore or not. I did fortunately have time to implement music and sound effects, but to avoid copyright issues I recruited the help of my girlfriend to make the music for the game.
+
+PROGRAM DOCUMENTATION:
+	I tried my best to make the game as user-friendly as possible, depending as little as possible on the user as I could. The user only needs to know that to enter their name, they type their name and then press enter. For grid input, it is as simple as pressing the grid (which they will know that a location is locked-on thanks to the "targetsprite" that appears at the most recent user click location), and then clicking the fire button. Clicks outside of the grid bounds are ignored, unless the click is on one of the buttons. Speaking of buttons, the "exit" button exits the program (included this because the close window button is hidden in fullscreen mode), the volume off button turns the music off, and the volume on button turns the music on.
+Potential Additional Features:
+	1. For other programmers, I have tried to make every operation as understandable and reader-friendly as possible, but some of the math involved gets messy, and the list of enum texture "boardstates" may look pretty messy. I wanted to feature a "radio" of sorts, that would randomly select a song from a folder of songs, but due to the consequences of copyright infringement in college I decided not to export it as a standard feature, nor did I include the folder of songs I was using for my own enjoyment. If you want to add this radio, I would make a small 400x400 graphic of a "radio" or whatever device you want, with a transparent background, space for song information (title, artist) and buttons for skip song, replay, etc, and would create a button using my button class to make a transparent shape on each button to get user clicks. Last, I would add an updating text display of the song information, which would be obtained from a list of song information selected with the song. *I also wanted to add "is hovering" compatibility for all of the buttons in the "user is picking spots on grid" state, but due to the nature of the gamestate meaning that the window is only redrawn upon an event and not simply real time input of mouse like with the title screen, highscore screen, etc.*
+	2. New gamestate Gamestate: State_Paused. A pause button state that allows the user to pause the game, come back, and be able to assume as normal. This would be implemented by adding a new gamestate to the enum of gamestates, and adding this gamestate to the DrawGames() and HandleEvents() switch cases. Add a button (or, perhaps maybe an event where the user presses the "esc" key) to the gamestates where you would want a pause screen, so that the gamestate can be switched. Would possibly want to have a temporary variable storing the gamestate that was active before pausing, and make sure no variables or input are lost in the temporary switch to the pause gamestate so that the user can come back and resume with no issues.
+	3. I also would have added a censoring system for the user-inputted names, but I didn't feel comfortable typing the list of words that would need to be censored.
+	4. While I COMPLETELY overhauled the ship/missed shot texture generation that updates the board based on shots that have occured, which cut down on drawing time between each gameboard draw by multiple seconds, I believe further optimization in the initial program loading could be done.
+	5. Last but not least, I wanted to add some sort of resource handler for the textures and sprites used in the game, but I had time limitations and I needed to take a break from working on this due to my physical health (I got addicted to working on my game and ended up with an inflammed tendon sheath in a few fingers on my right hand).
+
+TESTS:
+Note: The symbol: "⌫" denotes a backspace.
+Testing: Entering Names
+Input: Luu⌫⌫⌫⌫(Enter)
+Expected Output: (empty, but no vector out of bounds exception from more backspaces than there are letters).
+Output: (empty), user has to continue typing. Program doesn't accept empty names.
+
+Input: Lucc⌫a<?_*s
+Expected Output: "Lucas" (enter name string only accepts text.unicodes above 64 and below 128)
+Output: "Lucas"
+
+Testing: Gamestate: State_Playing, user selects points on grid
+Input: click on valid point (p1), click on new valid point (p2), click outside of grid (p3), click fire button (p4)
+Expected Output: p2 is the point shot at target. p1 and p3 are ignored, and p4 initialized shooting p2 at target.
+Output: p2 was the point shot at target. P1 and p3 were ignored, p4 shot p2 at the target.
+
+Testing: Gamestate: State_Playing, user selects and shoots at already attempted location
+Input: clicked location where shot has already been attempted (p1), then clicked fire button (p2)
+Expected Output: p1 is NOT fired at target. Play state does not advance. Event window informs user to pick new location.
+Output: p1 was not fired at target. Play state did not advance. Event window informed current user to pick new location.
+
+Testing: Switching from Gamestate: State_Title, to Gamestate: State_Highscore, back to Gamestate: State_Title
+Input: Click highscore button, view highscore screen to admire my graphics for a little bit, then hit "back to menu" button.
+Expected Output: Title screen displayed, highscore screen displayed, title screen displayed.
+Output: Title screen displayed, highscore screen displayed, title screen displayed. All good :)
+
+REFLECTIONS:
+	I learned a lot from this project. Perhaps the biggest, most important lesson I learned was that in debugging, check the most simple or common issues before writing walls of code attempting to fix the issue, as more times than not, the problem is likely due to a small mistake in your code somewhere. Check your switch cases to make sure everything has a "break;" statement (or doesn't have one if the situation is appropriate), check your basic operations and functions, debug with breakpoints on functions you believe are involved with the issue. It may also help to just walk away and take a break, and come back to your code later with a fresh mind. 
+	It is also incredibly important to test each seperate function/operation on its own before you compile everything into one comprehensive program. Take, for example, my random ship generation. I tested this in its own different project entirely, back when we were learning about two-dimensional arrays, and this made it easier to implement into the main project since I knew it was working on its own.
+	While you can't be expected to have every single class, function, and the overall look of your project planned out before you start working, it is insanely helpful to have a rough plan of all classes and each classes' purpose. This helped in time optimization and in overall flow of the project.
+	If I were to do a new project, things I would do differently are mainly just taking mental/physical breaks and checking for small common issues in code first. My hand is still recovering and I am still salty about that one single "break;" I was missing, that caused several hours and hundreds of lines of code to be wasted trying to figure the issue out.
